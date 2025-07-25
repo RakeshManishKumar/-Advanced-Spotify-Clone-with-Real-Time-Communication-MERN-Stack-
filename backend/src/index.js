@@ -34,18 +34,16 @@ for (const envVar of requiredEnvVars) {
 
 const __dirname = path.resolve();
 const app = express();
-
 const httpServer = createServer(app);
 initializeSocket(httpServer);
 
-
-// ✅ Apply CORS before anything else
+// ✅ Apply CORS
 app.use(cors({
-  origin: ["http://localhost:5173"], // Your frontend origin
+  origin: ["http://localhost:5173"], // Update for production if needed
   credentials: true,
 }));
 
-// ✅ Clerk middleware (after CORS)
+// ✅ Clerk middleware
 app.use(clerkMiddleware());
 
 // ✅ JSON body parser
@@ -57,30 +55,27 @@ app.use(fileUpload({
   tempFileDir: path.join(__dirname, "temp"),
   createParentPath: true,
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10 MB
+    fileSize: 10 * 1024 * 1024, // 10 MB
   }
 }));
 
-// delete the temp folders file in every one hour by node-cron
-const tempDir = path.join(process.cwd(),"temp")
+// ✅ Scheduled job to clean temp folder every hour
+const tempDir = path.join(process.cwd(), "temp");
 cron.schedule("0 * * * *", () => {
-	if (fs.existsSync(tempDir)) {
-		fs.readdir(tempDir, (err, files) => {
-			if (err) {
-				console.log("error", err);
-				return;
-			}
-			for (const file of files) {
-				fs.unlink(path.join(tempDir, file), (err) => {});
-			}
-		});
-	}
+  if (fs.existsSync(tempDir)) {
+    fs.readdir(tempDir, (err, files) => {
+      if (err) {
+        console.log("error", err);
+        return;
+      }
+      for (const file of files) {
+        fs.unlink(path.join(tempDir, file), () => {});
+      }
+    });
+  }
 });
 
-
-
-
-// ✅ Routes
+// ✅ API Routes
 app.use('/api/auth', authRoutes);     // Public
 app.use('/api/users', userRoutes);    // Protected
 app.use('/api/admin', adminRoutes);   // Admin Protected
@@ -88,15 +83,13 @@ app.use('/api/songs', songRoutes);
 app.use('/api/album', albumRoutes);
 app.use('/api/stats', statsRoutes);
 
-
-
-if(process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "..frontend/dist")));
+// ✅ Serve frontend in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "..", "frontend", "dist")));
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "..", "frontend", "dist", "index.html"));
   });
 }
-
 
 // ✅ Error handler middleware
 app.use((err, req, res, next) => {
@@ -120,5 +113,3 @@ connectDB()
     console.error("❌ Failed to connect to MongoDB or start server:", error);
     process.exit(1);
   });
- 
-// 💡 Socket.io can be added here later...
