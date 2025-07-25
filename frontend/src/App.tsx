@@ -21,7 +21,7 @@ function App() {
   <Route path="/" element={<HomePage />} />
   <Route path="/chat" element={<ChatPage />} />
   <Route path="/album/:albumId" element={<AlbumPage />} />    
-  <Route path="*" element={<NotFoundage />} />
+  <Route path="/*splat" element={<NotFoundage />} />
 </Route>
       </Routes>
       <Toaster />
