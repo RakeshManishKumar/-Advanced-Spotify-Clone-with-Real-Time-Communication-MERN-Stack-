@@ -1,0 +1,34 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "seed:songs": "node src/seeds/songs.js",
+    "seed:albums": "node src/seeds/albums.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@clerk/backend": "^2.5.1",
+    "@clerk/express": "^1.7.4",
+    "@dotenvx/dotenvx": "^1.45.2",
+    "cloudinary": "^2.7.0",
+    "cores": "^0.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "express-fileupload": "^1.5.1",
+    "mongoose": "^8.16.4",
+    "node-cron": "^4.2.1",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
